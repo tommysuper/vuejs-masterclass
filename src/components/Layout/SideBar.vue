@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { title } from 'process'
-import SidebarLinks from './SidebarLinks.vue'
-import { Button } from '@/components/ui/button'
 const links = [
   {
     title: 'Dashboard',
