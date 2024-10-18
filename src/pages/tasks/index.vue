@@ -1,65 +1,18 @@
 <script setup lang="ts">
-import { supabase } from '@/lib/supabaseClient'
-import type { Tables } from 'database/types'
-import type { ColumnDef } from '@tanstack/vue-table'
-import { RouterLink } from 'vue-router'
+import { TasksWithProjectsQuery } from '@/utils/supaQueries'
+import { type TasksWithProjects } from '@/utils/supaQueries'
+import { columns } from '@/utils/tableColumns/taskColumns'
+usePageStore().pageData.title = 'Tasks'
 
-const tasks = ref<Tables<'tasks'>[] | null>(null)
-;(async () => {
-  const { data, error } = await supabase.from('tasks').select()
+const tasks = ref<TasksWithProjects | null>(null)
+const getTasks = async () => {
+  const { data, error } = await TasksWithProjectsQuery
   if (error) console.log(error)
 
   tasks.value = data
-})()
+}
 
-const columns: ColumnDef<Tables<'tasks'>>[] = [
-  {
-    accessorKey: 'project_id',
-    header: () => h('div', { class: 'text-left' }, 'Porject'),
-    cell: ({ row }) => {
-      return h('div', { class: 'text-left font-medium' }, row.getValue('project_id'))
-    }
-  },
-  {
-    accessorKey: 'name',
-    header: () => h('div', { class: 'text-left' }, 'Task Name'),
-    cell: ({ row }) => {
-      return h(
-        RouterLink,
-        {
-          to: `/tasks/${row.original.id}`,
-          class: 'text-left font-medium hover:bg-muted block w-full'
-        },
-        () => row.getValue('name')
-      )
-    }
-  },
-  {
-    accessorKey: 'status',
-    header: () => h('div', { class: 'text-left' }, 'Status'),
-    cell: ({ row }) => {
-      return h('div', { class: 'text-left font-medium' }, row.getValue('status'))
-    }
-  },
-  {
-    accessorKey: 'due_date',
-    header: () => h('div', { class: 'text-left' }, 'Due Date'),
-    cell: ({ row }) => {
-      return h('div', { class: 'text-left font-medium' }, row.getValue('due_date'))
-    }
-  },
-  {
-    accessorKey: 'collaborators',
-    header: () => h('div', { class: 'text-left' }, 'Collaborators'),
-    cell: ({ row }) => {
-      return h(
-        'div',
-        { class: 'text-left font-medium' },
-        JSON.stringify(row.getValue('collaborators'))
-      )
-    }
-  }
-]
+await getTasks()
 </script>
 <template>
   <DataTable v-if="tasks" :columns="columns" :data="tasks" />

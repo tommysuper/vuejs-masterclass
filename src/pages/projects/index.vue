@@ -1,73 +1,16 @@
 <script setup lang="ts">
-import { supabase } from '@/lib/supabaseClient'
-import type { Tables } from 'database/types'
-import type { ColumnDef } from '@tanstack/vue-table'
-import { RouterLink } from 'vue-router'
-
-const projects = ref<Tables<'projects'>[] | null>(null)
+import { ProjectQuery, type Projects } from '@/utils/supaQueries'
+import { columns } from '@/utils/tableColumns/projectColumns'
+usePageStore().pageData.title = 'Porjects'
+const projects = ref<Projects | null>(null)
 const getProjects = async () => {
-  const { data, error } = await supabase.from('projects').select()
+  const { data, error } = await ProjectQuery
   if (error) console.log(error)
 
   projects.value = data
 }
 
 await getProjects()
-const columns: ColumnDef<Tables<'projects'>>[] = [
-  {
-    accessorKey: 'id',
-    header: () => h('div', { class: 'text-left' }, 'Porject ID'),
-    cell: ({ row }) => {
-      return h('div', { class: 'text-left font-medium' }, row.getValue('id'))
-    }
-  },
-  {
-    accessorKey: 'name',
-    header: () => h('div', { class: 'text-left' }, 'Name'),
-    cell: ({ row }) => {
-      return h(
-        RouterLink,
-        {
-          to: `/projects/${row.original.slug}`,
-          class: 'text-left font-medium hover:bg-muted block w-full'
-        },
-        () => row.getValue('name')
-      )
-    }
-  },
-  {
-    accessorKey: 'slug',
-    header: () => h('div', { class: 'text-left' }, 'Slug'),
-    cell: ({ row }) => {
-      return h('div', { class: 'text-left font-medium' }, row.getValue('slug'))
-    }
-  },
-  {
-    accessorKey: 'status',
-    header: () => h('div', { class: 'text-left' }, 'Status'),
-    cell: ({ row }) => {
-      return h('div', { class: 'text-left font-medium' }, row.getValue('status'))
-    }
-  },
-  {
-    accessorKey: 'created_at',
-    header: () => h('div', { class: 'text-left' }, 'Created Date'),
-    cell: ({ row }) => {
-      return h('div', { class: 'text-left font-medium' }, row.getValue('created_at'))
-    }
-  },
-  {
-    accessorKey: 'collaborators',
-    header: () => h('div', { class: 'text-left' }, 'Collaborators'),
-    cell: ({ row }) => {
-      return h(
-        'div',
-        { class: 'text-left font-medium' },
-        JSON.stringify(row.getValue('collaborators'))
-      )
-    }
-  }
-]
 </script>
 <template>
   <DataTable v-if="projects" :columns="columns" :data="projects" />

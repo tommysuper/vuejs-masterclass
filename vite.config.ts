@@ -27,10 +27,14 @@ export default defineConfig({
       imports: [
         // presets
         'vue',
-        VueRouterAutoImports
+        VueRouterAutoImports,
+        {
+          pinia: ['defineStore', 'storeToRefs', 'acceptHMRUpdate']
+        }
       ],
       viteOptimizeDeps: true,
-      dts: true
+      dts: true,
+      dirs: ['src/stores']
     }),
     vue({
       template: {
