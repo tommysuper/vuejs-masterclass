@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ProjectQuery, type Projects } from '@/utils/supaQueries'
+import { ProjectsQuerys, type Projects } from '@/utils/supaQueries'
 import { columns } from '@/utils/tableColumns/projectColumns'
 usePageStore().pageData.title = 'Porjects'
 const projects = ref<Projects | null>(null)
 const getProjects = async () => {
-  const { data, error } = await ProjectQuery
+  const { data, error } = await ProjectsQuerys
   if (error) console.log(error)
 
   projects.value = data

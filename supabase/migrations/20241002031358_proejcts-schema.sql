@@ -5,6 +5,7 @@ create type current_status as enum ('in-progress','completed');
 
 create table projects(
   id bigint primary key generated always as identity not null,
+  description text,
   created_at timestamp default now() not null,
   name text not null,
   slug  text unique not null,
