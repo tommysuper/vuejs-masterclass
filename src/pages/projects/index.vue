@@ -4,8 +4,8 @@ import { columns } from '@/utils/tableColumns/projectColumns'
 usePageStore().pageData.title = 'Porjects'
 const projects = ref<Projects | null>(null)
 const getProjects = async () => {
-  const { data, error } = await ProjectsQuerys
-  if (error) console.log(error)
+  const { data, error, status } = await ProjectsQuerys
+  if (error) useErrorStore().setError({ error, customCode: status })
 
   projects.value = data
 }
