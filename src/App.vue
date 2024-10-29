@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useErrorStore } from './stores/error'
 const errorStore = useErrorStore()
-
 onErrorCaptured((error) => {
   errorStore.setError({ error })
 })
+
+onMounted(async () => {})
 </script>
 
 <template>
