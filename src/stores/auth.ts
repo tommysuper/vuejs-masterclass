@@ -6,7 +6,7 @@ import type { Tables } from 'database/types'
 export const useAuthStore = defineStore('auth-store', () => {
   const user = ref<User | null>(null)
   const profile = ref<Tables<'profiles'> | null>(null)
-
+  const isTraningAuthChanges = ref(false)
   const setProfile = async () => {
     if (!user.value) {
       profile.value = null
@@ -17,9 +17,10 @@ export const useAuthStore = defineStore('auth-store', () => {
       profile.value = data || null
     }
   }
-  const setUser = async (userSession: null | Session) => {
+  const setUser = async (userSession: null | Session = null) => {
     if (!userSession) {
       user.value = null
+      profile.value = null
       return
     }
     user.value = userSession.user
@@ -31,12 +32,22 @@ export const useAuthStore = defineStore('auth-store', () => {
       await setUser(data.session)
     }
   }
+  const trackAuthChanges = () => {
+    if (isTraningAuthChanges.value) return
+    isTraningAuthChanges.value = true
+    supabase.auth.onAuthStateChange((event, session) => {
+      setTimeout(async () => {
+        await setUser(session)
+      }, 0)
+    })
+  }
 
   return {
     user,
     profile,
     setUser,
-    getSession
+    getSession,
+    trackAuthChanges
   }
 })
 

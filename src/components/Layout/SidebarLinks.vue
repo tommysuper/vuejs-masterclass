@@ -1,13 +1,19 @@
 <script setup lang="ts">
+import { emit } from 'process'
+
 interface LinkProp {
   title: string
   to?: string
   icon: string
 }
-
+const emits = defineEmits<{ actionClicked: [string] }>()
 defineProps<{
   links: LinkProp[]
 }>()
+
+const emitActionClicked = (linkTitle: string) => {
+  emits('actionClicked', linkTitle)
+}
 </script>
 
 <template>
@@ -22,7 +28,7 @@ defineProps<{
       <iconify-icon :icon="link.icon"></iconify-icon>
       <span class="hidden lg:block text-nowrap">{{ link.title }}</span>
     </RouterLink>
-    <div v-else class="nav-link cursor-pointer">
+    <div v-else class="nav-link cursor-pointer" @click="emitActionClicked(link.title)">
       <iconify-icon :icon="link.icon"></iconify-icon>
       <span class="hidden lg:block text-nowrap">{{ link.title }}</span>
     </div>
