@@ -34,7 +34,7 @@ export default defineConfig({
       ],
       viteOptimizeDeps: true,
       dts: true,
-      dirs: ['src/stores']
+      dirs: ['src/stores/**', 'src/composables/**']
     }),
     vue({
       template: {
